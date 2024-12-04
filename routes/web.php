@@ -230,6 +230,7 @@ Route::get('/admin/feedback', [FeedbackController::class, 'index'])->name('admin
 Route::get('/menus', [MenuController::class, 'showMenu'])->name('menus.index');
 Route::get('/menus', [MenuController::class, 'showMenu']);
 
+
 // Route::get('/admin/menus/top-rated', [Admin\MenuController::class, 'showTopRatedMenus'])->name('admin.menus.topRated');
 // Admin routes (inside routes/web.php)
 Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function () {
@@ -248,6 +249,7 @@ Route::get('/customer/menus', [CustomerMenuController::class, 'showTopRatedMenus
 Route::get('/menu/{id}/recommend', [ControllersMenuController::class, 'recommendSimilarMenus'])->name('menu.recommend');
 
 
+Route::get('/menus', [CustomerMenuController::class, 'index'])->name('customer.menus.search');
 
 
 require __DIR__.'/auth.php';

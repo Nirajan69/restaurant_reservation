@@ -3,6 +3,20 @@
 @section('content') <!-- Define the content section -->
 <div style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
 
+    <!-- Search Form -->
+    <form action="{{ route('customer.menus.search') }}" method="GET" style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <input
+            type="text"
+            name="search"
+            placeholder="Search for menus..."
+            value="{{ request('search') }}"
+            style="padding: 10px; font-size: 16px; width: 300px; border: 1px solid #ddd; border-radius: 5px;"
+        >
+        <button type="submit" style="padding: 10px 20px; margin-left: 10px; background-color: #38a169; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Search
+        </button>
+    </form>
+
     <!-- Display Available Menus -->
     <h2 style="font-size: 2rem; font-weight: bold; text-align: center; color: #e53e3e; margin-bottom: 40px;">
         Available Menus
@@ -18,9 +32,7 @@
                     <h3>{{ $menu->name }}</h3>
                     <p>{{ $menu->description }}</p>
                     <p>Price: Rs. {{ $menu->price }}</p>
-                    {{-- <p style="color: #e53e3e; font-weight: bold;">Rating: {{ $menu->rating }}</p> --}}
                     <p style="color: #38a169; font-weight: bold;">Rating: {{ $menu->manual_rating ?? 'No Rating' }}</p>
-
                 </div>
             @endforeach
         </div>

@@ -18,4 +18,20 @@ class MenuController extends Controller
         // Pass the fetched top-rated menus to the view
         return view('customer.menus.index', compact('topRatedMenus'));
     }
+    public function index(Request $request)
+    {
+        // Get the search query
+        $search = $request->query('search');
+
+        // Fetch menus based on the search query
+        $menus = Menu::query()
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', '%' . $search . '%') // Search by name
+                             ->orWhere('description', 'like', '%' . $search . '%'); // Search by description
+            })
+            ->get();
+
+        // Return the view with menus
+        return view('customer.menus', compact('menus'));
+    }
 }
