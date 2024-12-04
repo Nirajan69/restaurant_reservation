@@ -3,35 +3,39 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use App\Models\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http; // Add this for HTTP client
 
 class MenuController extends Controller
 {
-    public function showTopRatedMenus()
-    {
-        // Fetch the top 3 highest-rated menus based on the 'rating' column in descending order
-        $topRatedMenus = Menu::orderBy('rating', 'desc')  // Order menus by rating in descending order
-                             ->take(3)  // Limit the result to top 3
-                             ->get();
-
-        // Pass the fetched top-rated menus to the view
-        return view('customer.menus.index', compact('topRatedMenus'));
-    }
     public function index(Request $request)
     {
         // Get the search query
         $search = $request->query('search');
 
-        // Fetch menus based on the search query
-        $menus = Menu::query()
-            ->when($search, function ($query, $search) {
-                return $query->where('name', 'like', '%' . $search . '%') // Search by name
-                             ->orWhere('description', 'like', '%' . $search . '%'); // Search by description
-            })
-            ->get();
+        // If there's a search query, call the external API
+        if ($search) {
+            $response = Http::post('http://127.0.0.1:8000/api/result', [
+                'title' => $search, // Send the search term as the title
+            ]);
 
-        // Return the view with menus
+            // Check if the API call was successful
+            if ($response->successful()) {
+                // Get the data from the response
+                $menus = $response->json();
+
+                // Return the view with the fetched data
+                return view('customer.menus', compact('menus'));
+            } else {
+                // If the API call fails, you can return an error or handle it as needed
+                return view('customer.menus', ['error' => 'Recommendation not availabe at the moment']);
+            }
+        }
+
+        // If there's no search query, fetch all menus from the database
+        $menus = Menu::all();
+
+        // Return the view with all menus
         return view('customer.menus', compact('menus'));
     }
 }

@@ -16,31 +16,49 @@
             Search
         </button>
     </form>
-
     <!-- Display Available Menus -->
     <h2 style="font-size: 2rem; font-weight: bold; text-align: center; color: #e53e3e; margin-bottom: 40px;">
-        Available Menus
+        Your recommended Menus
     </h2>
 
-    @if($menus->isEmpty())
-        <p style="text-align: center;">No menu items found for your search.</p>
-    @else
-        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+    <div class="container mt-5">
+    @if(isset($menus) && count($menus) > 0)
+        <div class="row">
             @foreach($menus as $menu)
-                <div style="border: 1px solid #ddd; padding: 20px; width: 300px; text-align: center; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                    <img
-                        src="{{ asset('uploads/menus/' . $menu->image) }}"
-                        alt="{{ $menu->name }}"
-                        style="width: 100%; height: 200px; object-fit: cover; margin-bottom: 10px; border-radius: 10px;"
-                    >
-                    <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 10px;">{{ $menu->name }}</h3>
-                    <p style="margin-bottom: 10px;">{{ $menu->description }}</p>
-                    <p style="font-weight: bold; color: #e53e3e; margin-bottom: 10px;">Price: Rs. {{ $menu->price }}</p>
-                    <p style="color: #38a169; font-weight: bold; margin-bottom: 10px;">Rating: {{ $menu->manual_rating ?? 'No Rating' }}</p>
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h2 class="card-title" style="font-weight:bold; font-size:1.5rem;">{{ $menu['Name'] }}</h2>
+                            <p class="card-text">{{ Str::limit($menu['Describe'], 100) }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">{{ $menu['C_Type'] }}</span>
+                                <span class="badge" 
+      style="background-color: {{ $menu['Veg_Non'] == 'veg' ? 'green' : 'red' }}; 
+             color: white; 
+             padding: 5px 10px; 
+             margin-right: 5px; 
+             border-radius: 20px; 
+             font-weight: bold;">
+                                    {{ ucfirst($menu['Veg_Non']) }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             @endforeach
         </div>
+    @elseif(isset($error))
+        <div class="alert alert-danger">
+            {{ $error }}
+        </div>
+    @else
+        <div class="alert alert-info">
+            No results found.
+        </div>
     @endif
+</div>
+
+
 
 </div>
 @endsection
